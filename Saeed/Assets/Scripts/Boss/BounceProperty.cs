@@ -10,12 +10,10 @@ public class BounceProperty: MonoBehaviour {
     public float trembleDecrease;
 
     [Header("External Values")]
-    public SpriteRenderer extra_renderer;
+    public BossHealth bossHealth;
 
     SpriteRenderer _renderer;
     Collider2D _collider;
-    Shader shaderDefault;
-    Shader shaderGUItext;
 
     Coroutine trembleRoutine;
     Vector2 originalScale;
@@ -24,8 +22,6 @@ public class BounceProperty: MonoBehaviour {
     {
         _renderer = GetComponent<SpriteRenderer>();
         _collider = GetComponent<Collider2D>();
-        shaderDefault = _renderer.material.shader;
-        shaderGUItext = Shader.Find("GUI/Text Shader");
         originalScale = transform.localScale;
     }
 
@@ -39,7 +35,7 @@ public class BounceProperty: MonoBehaviour {
     {
         if (trembleRoutine != null) StopCoroutine(trembleRoutine);
         trembleRoutine = StartCoroutine(TrembleAnimation(1.0f));
-        StartCoroutine(WhiteFlash());
+        if (bossHealth) bossHealth.SetDamage(1);
     }
 
     IEnumerator TrembleAnimation(float manualRatio)
@@ -83,14 +79,5 @@ public class BounceProperty: MonoBehaviour {
             }
             yield return new WaitForEndOfFrame();
         }
-    }
-
-    IEnumerator WhiteFlash()
-    {
-        _renderer.material.shader = shaderGUItext;
-        if(extra_renderer) extra_renderer.material.shader = shaderGUItext;
-        for (int i = 0; i < 3; i++) yield return null;
-        _renderer.material.shader = shaderDefault;
-        if (extra_renderer) extra_renderer.material.shader = shaderDefault;
     }
 }

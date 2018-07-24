@@ -15,19 +15,19 @@ public class PlayerHealth : MonoBehaviour {
     private void Start()
     {
         value = maxHealth;
-        UpdateScore();
+        UpdateDisplay();
     }
 
-    private void UpdateScore()
+    private void UpdateDisplay()
     {
         if (UIDisplay)
             UIDisplay.text = "Health: " + value.ToString("0");
     }
 
-    public void TakeDamage()
+    public void SetDamage(int damage)
     {
-        value--;
-        UpdateScore();
+        value -= damage;
+        UpdateDisplay();
         if(value < 1)
         {
             GameManager.instance.ResetScene();

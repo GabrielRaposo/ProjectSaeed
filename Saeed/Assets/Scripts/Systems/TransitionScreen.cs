@@ -42,7 +42,7 @@ public class TransitionScreen : MonoBehaviour {
 
     IEnumerator fadeOutAnimation(int index)
     {
-        Time.timeScale = 0;
+        Time.timeScale = .1f;
 
         AsyncOperation sceneLoadOperation = SceneManager.LoadSceneAsync(index);
         sceneLoadOperation.allowSceneActivation = false;

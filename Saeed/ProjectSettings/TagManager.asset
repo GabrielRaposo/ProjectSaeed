@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Bouncy
   - Enemy
+  - Hitbox
   layers:
   - Default
   - TransparentFX
@@ -16,8 +17,8 @@ TagManager:
   - 
   - 
   - Ground
-  - 
-  - 
+  - Boss
+  - Enemy
   - 
   - 
   - 
@@ -42,6 +43,9 @@ TagManager:
   m_SortingLayers:
   - name: Boss
     uniqueID: 802188619
+    locked: 0
+  - name: Arena
+    uniqueID: 554046943
     locked: 0
   - name: Default
     uniqueID: 0

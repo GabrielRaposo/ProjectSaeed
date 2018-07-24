@@ -15,6 +15,11 @@ public class GameManager : MonoBehaviour {
         instance = this;
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.R)) ResetScene();
+    }
+
     public void ResetScene()
     {
         int index = SceneManager.GetActiveScene().buildIndex;

@@ -16,6 +16,7 @@ public class PlayerMovement : MonoBehaviour {
     public LayerMask groundLayer;
     public string BouncyTag;
     public string EnemyTag;
+    public string HitboxTag;
 
     [Header("Component Reference")]
     public GameObject directionArrow;
@@ -137,7 +138,7 @@ public class PlayerMovement : MonoBehaviour {
         }
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerStay2D(Collider2D collision)
     {
         if(collision.tag == BouncyTag)
         {
@@ -159,11 +160,9 @@ public class PlayerMovement : MonoBehaviour {
                 StartCoroutine(bounceDisableFrames());
             }
         } else 
-        if (collision.tag == EnemyTag)
+        if(collision.tag == HitboxTag)
         {
-            if (invincible) return;
-            _health.TakeDamage();
-            DisableMovement();
+            GetDamaged();
         }
     }
 
@@ -191,9 +190,28 @@ public class PlayerMovement : MonoBehaviour {
         bounceDisabled = false;
     }
 
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.transform.tag == EnemyTag)
+        {
+            Bomb bomb = collision.gameObject.GetComponent<Bomb>();
+            if (bomb) bomb.Explode();
+            GetDamaged();
+        }
+    }
+
+    void GetDamaged()
+    {
+        if (invincible) return;
+        _health.SetDamage(1);
+        DisableMovement();
+    }
+
     void DisableMovement()
     {
         StopAllCoroutines();
+        bounceDisabled = false;
         Knockback();
         StartCoroutine(blinkLoop());
     }
