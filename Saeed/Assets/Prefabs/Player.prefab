@@ -164,8 +164,8 @@ MonoBehaviour:
   speedIncreaseRatio: 1
   speedDecreaseRatio: 0.6
   maxSpeed: 10
-  jumpForce: 800
-  jumpMaxHold: 13
+  jumpForce: 700
+  jumpMaxHold: 18
   groundLayer:
     serializedVersion: 2
     m_Bits: 256

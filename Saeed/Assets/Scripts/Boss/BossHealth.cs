@@ -90,7 +90,7 @@ public class BossHealth : MonoBehaviour {
         fillBar.fillAmount = 1;
 
         SetMaxValue(stageValues[stageIndex]);
-        GetComponent<BossMovement>().EndStage();
+        GetComponent<BossStateManager>().EndStage();
         invincible = false;
     }
 

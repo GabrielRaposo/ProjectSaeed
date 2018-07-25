@@ -5,75 +5,32 @@ using TMPro;
 
 public class BossMovement : MonoBehaviour {
     const float 
-        HIDE_Y = -9f; //a altura ótima parada posicionar o Boss de forma que ele fique escondido completamente no chão
+        HIDE_Y = -10f; //a altura ótima parada posicionar o Boss de forma que ele fique escondido completamente no chão
 
-    [Header("UI References")]
-    public TextMeshProUGUI stageTitle;
-
-    [Header("External References")]
+    [Header("References")]
+    public SpriteRenderer bodyRenderer;
     public ParticleSystem groundShake;
     public string layerToIgnore;
 
-    public enum Stage { Tutorial, Face, Arms, Legs, Outro }
-    public Stage currentStage;
-
-    Animator _animator;
-    SpriteRenderer _renderer;
+    BossStateManager stateManager;
 
     private void Start()
     {
-        _animator = GetComponent<Animator>();
-        _renderer = GetComponent<SpriteRenderer>();
+        stateManager = GetComponent<BossStateManager>();
+
         Physics2D.IgnoreLayerCollision(gameObject.layer, LayerMask.NameToLayer(layerToIgnore), true);
-        SetStage();
+        Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer(layerToIgnore), LayerMask.NameToLayer(layerToIgnore), true);
     }
 
-    public void EndStage()
+    public void StartLoop(int stage)
     {
-        currentStage++;
-        SetStage();
-    }
-
-    void SetStage() {
-        switch (currentStage)
+        switch (stage)
         {
             default:
-            case Stage.Tutorial:
-                StartCoroutine(SetTitle("Stage 0: Tutorial"));
-                transform.position = new Vector2(transform.position.x, -7);
-                _animator.enabled = false;
-                break;
-
-            case Stage.Face:
-                StartCoroutine(SetTitle("Stage 1: Face Reveal"));
-                transform.position = new Vector2(transform.position.x, -5);
-                _animator.enabled = true;
+            case 1:
                 StartCoroutine(Stage1Loop());
-                break;
-
-            case Stage.Arms:
-                StartCoroutine(SetTitle("Stage 2: Armed and Ready"));
-                transform.position = new Vector2(transform.position.x, -4);
-                break;
-
-            case Stage.Legs:
-                StartCoroutine(SetTitle("Stage 3: Leg day!"));
-                break;
-
-            case Stage.Outro:
-                StartCoroutine(SetTitle("Stage X: |     || \n                ||    |_"));
-                Destroy(gameObject);
-                break;
+            break;
         }
-        GetComponent<BossHealth>().SetStageIndex((int)currentStage);
-    }
-
-    IEnumerator SetTitle(string text)
-    {
-        stageTitle.text = text;
-        stageTitle.enabled = true;
-        yield return new WaitForSeconds(3);
-        stageTitle.enabled = false;
     }
 
     IEnumerator WaitToAct(float min, float max)
@@ -86,11 +43,28 @@ public class BossMovement : MonoBehaviour {
     {
         while (true)
         {
-            yield return WaitToAct(1f, 3f);
+            yield return WaitToAct(1f, 2f);
 
             //select action
-            yield return ACTION_SpawnBombs();
-            yield return ACTION_HideAndShow();
+            int randomAction = Random.Range(0, 5);
+            switch (randomAction)
+            {
+                default:
+                case 0:
+                case 1:
+                    yield return ACTION_HideAndShow();
+                break;
+
+                case 2:
+                case 3:
+                    yield return ACTION_SpawnBombs();
+                break;
+
+                case 4:
+                    yield return ACTION_Jump();
+                break;
+            }
+                
         }
     }
 
@@ -98,20 +72,8 @@ public class BossMovement : MonoBehaviour {
     IEnumerator ACTION_HideAndShow()
     {
         //pre-hide
-        _renderer.color = Color.blue;
-        yield return new WaitForSeconds(2);
-        _renderer.color = Color.white;
-
-        //hide
-        float originalY = transform.position.y;
-        transform.position += Vector3.up * .2f;
-        for(int i = 0; i < 6; i++) yield return new WaitForEndOfFrame();
-        while (transform.position.y > HIDE_Y)
-        {
-            yield return new WaitForEndOfFrame();
-            transform.position += Vector3.down * .4f;
-        }
-        yield return new WaitForSeconds(.5f);
+        stateManager.SetAnimationState("Hide");
+        yield return new WaitForSeconds(1);
 
         //pre-show
         float xSpawnPosition = Random.Range(-5f, 5f);
@@ -121,32 +83,40 @@ public class BossMovement : MonoBehaviour {
         groundShake.Stop();
 
         //show
-        transform.position = new Vector2(xSpawnPosition, HIDE_Y);
-        while (transform.position.y < originalY)
-        {
-            yield return new WaitForEndOfFrame();
-            transform.position += Vector3.up * .4f;
-        }
-        transform.position = new Vector2(xSpawnPosition, originalY);
+        transform.position = new Vector2(xSpawnPosition, transform.position.y);
+        stateManager.SetAnimationState("Off");
+        yield return new WaitForSeconds(1);
     }
 
     IEnumerator ACTION_SpawnBombs()
     {
+        stateManager.SetAnimationState("Conjure");
+
+        SetBomb(Vector2.up * Random.Range(0f, 4f) + Vector2.right * Random.Range(-9, -5));
+        yield return new WaitForSeconds(.3f);
+        //SetBomb(Vector2.up * Random.Range(0f, 4f) + Vector2.right * Random.Range(-4, 4));
+        //yield return new WaitForSeconds(.3f);
+        SetBomb(Vector2.up * Random.Range(0f, 4f) + Vector2.right * Random.Range( 4, 9));
+        yield return new WaitForSeconds(2);
+
+        stateManager.SetAnimationState("Off");
+        yield return new WaitForSeconds(1);
+    }
+
+    IEnumerator ACTION_Jump()
+    {
         //charge
-        _renderer.color = Color.red;
-        yield return new WaitForSeconds(1);
+        stateManager.SetAnimationState("ChargeJump");
+        yield return new WaitForSeconds(2);
 
-        //spawn
-        SetBomb(Vector2.up * Random.Range(3f, 3.5f) + Vector2.left  * Random.Range(1, 6));
-        SetBomb(Vector2.up * Random.Range(3f, 3.5f) + Vector2.right * Random.Range(1, 6));
-
-        yield return new WaitForSeconds(1);
-        _renderer.color = Color.white;
+        //jump
+        stateManager.SetAnimationState("On");
+        yield return new WaitForSeconds(1.5f);
     }
 
     private void SetBomb(Vector2 position)
     {
         GameObject _bomb = Spawner.instance.GetFromPool(0, position);
-        _bomb.GetComponent<Bomb>().SetToLaunch();
+        _bomb.GetComponent<Bomb>().Spawn();
     }
 }

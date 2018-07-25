@@ -6,11 +6,11 @@ public class Bomb : MonoBehaviour {
     const float Y_SIZE = 1f;
 
     public SpriteRenderer visualComponent;
+    public ParticleSystem spawnEffect;
     public ParticleSystem explosionParticles;
     public Collider2D explosionHitbox;
 
     bool bounceDisabled;
-    float originalGravity;
     Vector2 originalScale;
     Coroutine trembleRoutine;
 
@@ -25,7 +25,7 @@ public class Bomb : MonoBehaviour {
         shaderBlink = Shader.Find("GUI/Text Shader");
     }
 
-    void setComponents(bool value)
+    void SetComponents(bool value)
     {
         visualComponent.enabled = value;
         _collider.enabled = value;
@@ -36,24 +36,39 @@ public class Bomb : MonoBehaviour {
         }
     }
 	
-    public void SetToLaunch()
+    public void Spawn()
     {
-        setComponents(true);
-        originalGravity = _rigidbody.gravityScale;
-        _rigidbody.velocity = Vector2.zero;
-        _rigidbody.gravityScale = 0;
+        SetComponents(false);
+        StartCoroutine(SpawnAnimation());
+    }
+
+    IEnumerator SpawnAnimation()
+    {
+        originalScale = visualComponent.transform.localScale;
+        visualComponent.transform.localScale = Vector2.zero;
+
+        visualComponent.enabled = true;
+        spawnEffect.Play();
+        while(visualComponent.transform.localScale.x < originalScale.x)
+        {
+            yield return new WaitForEndOfFrame();
+            visualComponent.transform.localScale += Vector3.one * .005f;
+        }
+        spawnEffect.Stop();
+
         StartCoroutine(WaitToLaunch());
     }
 
+
     IEnumerator WaitToLaunch()
     {
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(.5f);
+        SetComponents(true);
 
         float 
-            x = Random.Range(4f, 8f),
-            y = Random.Range(0f, 3f);
+            x = Random.Range(5f, 8f),
+            y = Random.Range(4f, 6f);
         int signal = (Random.Range(1, 3) * 2) - 3;
-        _rigidbody.gravityScale = originalGravity;
         _rigidbody.velocity = Vector2.right * x * signal + Vector2.up * y;
         StartCoroutine(ExplosionTimer());
     }
@@ -62,7 +77,7 @@ public class Bomb : MonoBehaviour {
     {
         Shader shaderOriginal = visualComponent.material.shader;
         float 
-            waitingTimer = 1.2f,
+            waitingTimer = 1.5f,
             timerDecrease = .25f;
 
         while (waitingTimer > .1f)
@@ -99,7 +114,7 @@ public class Bomb : MonoBehaviour {
 
     IEnumerator waitToReturn()
     {
-        setComponents(false);
+        SetComponents(false);
         yield return new WaitForSeconds(.3f);
         explosionHitbox.enabled = false;
         transform.parent.GetComponent<Spawner>().Return(gameObject);
