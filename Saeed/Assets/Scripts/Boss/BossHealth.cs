@@ -28,7 +28,7 @@ public class BossHealth : MonoBehaviour {
 
     public void SetStageIndex(int index)
     {
-        stageIndex = index;
+        stageIndex = index % stageValues.Length;
         SetMaxValue(stageValues[stageIndex]);
     }
 	
@@ -90,7 +90,7 @@ public class BossHealth : MonoBehaviour {
         fillBar.fillAmount = 1;
 
         SetMaxValue(stageValues[stageIndex]);
-        GetComponent<BossStateManager>().EndStage();
+        GetComponent<BossController>().EndStage();
         invincible = false;
     }
 

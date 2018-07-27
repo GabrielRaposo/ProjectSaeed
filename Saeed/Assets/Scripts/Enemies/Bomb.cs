@@ -16,12 +16,14 @@ public class Bomb : MonoBehaviour {
 
     Rigidbody2D _rigidbody;
     Collider2D _collider;
-    Shader shaderBlink; 
+    Shader shaderSprite, shaderBlink; 
 
 	void Awake () {
         _rigidbody = GetComponent<Rigidbody2D>();
         _collider = GetComponent<Collider2D>();
         originalScale = visualComponent.transform.localScale;
+
+        shaderSprite = Shader.Find("Sprites/Default");
         shaderBlink = Shader.Find("GUI/Text Shader");
     }
 
@@ -75,10 +77,9 @@ public class Bomb : MonoBehaviour {
 
     IEnumerator ExplosionTimer()
     {
-        Shader shaderOriginal = visualComponent.material.shader;
         float 
             waitingTimer = 1.5f,
-            timerDecrease = .25f;
+            timerDecrease = .3f;
 
         while (waitingTimer > .1f)
         {
@@ -87,7 +88,7 @@ public class Bomb : MonoBehaviour {
 
             visualComponent.material.shader = shaderBlink;
             for (int i = 0; i < 2; i++) yield return new WaitForEndOfFrame();
-            visualComponent.material.shader = shaderOriginal;
+            visualComponent.material.shader = shaderSprite;
         }
         waitingTimer = .1f;
 
@@ -97,7 +98,7 @@ public class Bomb : MonoBehaviour {
 
             visualComponent.material.shader = shaderBlink;
             for (int j = 0; j < 2; j++) yield return new WaitForEndOfFrame();
-            visualComponent.material.shader = shaderOriginal;
+            visualComponent.material.shader = shaderSprite;
         }
 
         Explode();

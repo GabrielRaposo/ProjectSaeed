@@ -44,6 +44,9 @@ TagManager:
   - name: Boss
     uniqueID: 802188619
     locked: 0
+  - name: Enemy
+    uniqueID: 3185947447
+    locked: 0
   - name: Arena
     uniqueID: 554046943
     locked: 0
