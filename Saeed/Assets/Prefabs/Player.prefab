@@ -64,6 +64,22 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &1422149053507816
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4409821434506726}
+  - component: {fileID: 114198684022212252}
+  m_Layer: 0
+  m_Name: AudioManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!4 &4067464692398222
 Transform:
   m_ObjectHideFlags: 1
@@ -77,6 +93,19 @@ Transform:
   m_Father: {fileID: 4443037403969420}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 270}
+--- !u!4 &4409821434506726
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1422149053507816}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4443037403969420}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4443037403969420
 Transform:
   m_ObjectHideFlags: 1
@@ -84,11 +113,12 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1045136769508122}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -5, y: 0, z: 0}
+  m_LocalPosition: {x: -7.28, y: -4.26, z: 0}
   m_LocalScale: {x: 0.7, y: 1, z: 1}
   m_Children:
   - {fileID: 4067464692398222}
   - {fileID: 4756286491832646}
+  - {fileID: 4409821434506726}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -150,6 +180,44 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &114198684022212252
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1422149053507816}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad77125f4c3723541951fc8361324e81, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  audioMixerGroup: {fileID: 243310220363121988, guid: d729b33ad6fe0224bb1aa5fa0dd754d5,
+    type: 2}
+  sounds:
+  - name: Jump
+    clip: {fileID: 8300000, guid: f73005468c3a01c478b62d7f80777132, type: 3}
+    volume: 0.3
+    pitch: 1
+    loop: 0
+    audioSource: {fileID: 0}
+  - name: Bounce
+    clip: {fileID: 8300000, guid: 0683dde436da83c448af0d1928834f49, type: 3}
+    volume: 0.05
+    pitch: 3
+    loop: 0
+    audioSource: {fileID: 0}
+  - name: Land
+    clip: {fileID: 8300000, guid: da454db084b6b0942a6208de7e6a40a4, type: 3}
+    volume: 0.2
+    pitch: 3
+    loop: 0
+    audioSource: {fileID: 0}
+  - name: Hurt
+    clip: {fileID: 8300000, guid: e7ed246b2a760674188ed818bb2f1b2d, type: 3}
+    volume: 0.2
+    pitch: 1
+    loop: 0
+    audioSource: {fileID: 0}
 --- !u!114 &114415096679121034
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -161,17 +229,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2340227da3dab514b84a241fefd977cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  state: 0
+  stateColors:
+  - {r: 0.29411766, g: 0.7568628, b: 0.9921569, a: 1}
+  - {r: 0.9716981, g: 0.44459772, b: 0.44459772, a: 1}
+  - {r: 0.016019935, g: 0.45568624, b: 0.6792453, a: 1}
+  - {r: 0.8897689, g: 1, b: 0.3443396, a: 1}
   speedIncreaseRatio: 1
   speedDecreaseRatio: 0.6
   maxSpeed: 10
   jumpForce: 700
-  jumpMaxHold: 18
+  jumpMaxHold: 12
   groundLayer:
     serializedVersion: 2
     m_Bits: 256
-  BouncyTag: Bouncy
-  EnemyTag: Enemy
-  HitboxTag: Hitbox
+  audioManager: {fileID: 114198684022212252}
   directionArrow: {fileID: 1228635314308710}
   bouncePS: {fileID: 198049598405456956}
 --- !u!114 &114899882536455282

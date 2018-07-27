@@ -257,7 +257,7 @@ SpriteRenderer:
   m_SortingLayer: -1
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 1bf065089d6d1cd409fc9a68a1a6693f, type: 3}
-  m_Color: {r: 0.8301887, g: 0.3715989, b: 0.246707, a: 1}
+  m_Color: {r: 0.43805626, g: 0.68758786, b: 0.8679245, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -299,7 +299,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.5, g: 0.22172429, b: 0.12028301, a: 0}
+  m_BackGroundColor: {r: 0.26477394, g: 0.28965428, b: 0.3207547, a: 1}
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
@@ -444,6 +444,11 @@ Prefab:
       propertyPath: stageTitle
       value: 
       objectReference: {fileID: 1596594599}
+    - target: {fileID: 114734234773233836, guid: 4ff2ede7b17621c4bb432d37ac44a9da,
+        type: 2}
+      propertyPath: currentStage
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 4ff2ede7b17621c4bb432d37ac44a9da, type: 2}
   m_IsPrefabParent: 0
@@ -624,7 +629,7 @@ Prefab:
     m_Modifications:
     - target: {fileID: 4443037403969420, guid: 135ca1d348541c34db5d31a9bf998204, type: 2}
       propertyPath: m_LocalPosition.x
-      value: -7
+      value: -7.28
       objectReference: {fileID: 0}
     - target: {fileID: 4443037403969420, guid: 135ca1d348541c34db5d31a9bf998204, type: 2}
       propertyPath: m_LocalPosition.y
@@ -1280,7 +1285,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 0.8313726, g: 0.37254903, b: 0.24705884, a: 1}
+      maxColor: {r: 0.41960788, g: 0.654902, b: 0.82745105, a: 1}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -5950,9 +5955,10 @@ GameObject:
   - component: {fileID: 1416113527}
   - component: {fileID: 1416113526}
   - component: {fileID: 1416113525}
-  m_Layer: 0
+  - component: {fileID: 1416113528}
+  m_Layer: 11
   m_Name: Wall (Left)
-  m_TagString: Untagged
+  m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5980,7 +5986,7 @@ BoxCollider2D:
   m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_UsedByEffector: 0
+  m_UsedByEffector: 1
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
@@ -6051,7 +6057,7 @@ SpriteRenderer:
   m_SortingLayer: -1
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 1bf065089d6d1cd409fc9a68a1a6693f, type: 3}
-  m_Color: {r: 0.8301887, g: 0.3715989, b: 0.246707, a: 1}
+  m_Color: {r: 0.43805626, g: 0.68758786, b: 0.8679245, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -6060,6 +6066,23 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
+--- !u!252 &1416113528
+SurfaceEffector2D:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1416113523}
+  m_Enabled: 1
+  m_UseColliderMask: 1
+  m_ColliderMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_Speed: 0
+  m_SpeedVariation: 0
+  m_ForceScale: 0
+  m_UseContactForce: 0
+  m_UseFriction: 0
+  m_UseBounce: 1
 --- !u!1 &1490250976
 GameObject:
   m_ObjectHideFlags: 0
@@ -6568,6 +6591,7 @@ GameObject:
   - component: {fileID: 1846098343}
   - component: {fileID: 1846098342}
   - component: {fileID: 1846098341}
+  - component: {fileID: 1846098345}
   m_Layer: 8
   m_Name: Ground
   m_TagString: Untagged
@@ -6585,7 +6609,7 @@ BoxCollider2D:
   m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_UsedByEffector: 0
+  m_UsedByEffector: 1
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
@@ -6656,7 +6680,7 @@ SpriteRenderer:
   m_SortingLayer: -1
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 1bf065089d6d1cd409fc9a68a1a6693f, type: 3}
-  m_Color: {r: 0.8301887, g: 0.3715989, b: 0.246707, a: 1}
+  m_Color: {r: 0.43805626, g: 0.68758786, b: 0.8679245, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -6679,6 +6703,23 @@ Transform:
   m_Father: {fileID: 291177520}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!252 &1846098345
+SurfaceEffector2D:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1846098340}
+  m_Enabled: 1
+  m_UseColliderMask: 1
+  m_ColliderMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_Speed: 0
+  m_SpeedVariation: 0
+  m_ForceScale: 0
+  m_UseContactForce: 0
+  m_UseFriction: 1
+  m_UseBounce: 1
 --- !u!1 &2055898595
 GameObject:
   m_ObjectHideFlags: 0
@@ -6690,9 +6731,10 @@ GameObject:
   - component: {fileID: 2055898599}
   - component: {fileID: 2055898598}
   - component: {fileID: 2055898597}
-  m_Layer: 0
+  - component: {fileID: 2055898600}
+  m_Layer: 11
   m_Name: Wall (Right)
-  m_TagString: Untagged
+  m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -6720,7 +6762,7 @@ BoxCollider2D:
   m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_UsedByEffector: 0
+  m_UsedByEffector: 1
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
@@ -6791,7 +6833,7 @@ SpriteRenderer:
   m_SortingLayer: -1
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 1bf065089d6d1cd409fc9a68a1a6693f, type: 3}
-  m_Color: {r: 0.8301887, g: 0.3715989, b: 0.246707, a: 1}
+  m_Color: {r: 0.43805626, g: 0.68758786, b: 0.8679245, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -6800,3 +6842,20 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
+--- !u!252 &2055898600
+SurfaceEffector2D:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2055898595}
+  m_Enabled: 1
+  m_UseColliderMask: 1
+  m_ColliderMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_Speed: 0
+  m_SpeedVariation: 0
+  m_ForceScale: 0
+  m_UseContactForce: 0
+  m_UseFriction: 0
+  m_UseBounce: 1

@@ -29,7 +29,7 @@ public class BossController : MonoBehaviour {
         animator = GetComponent<Animator>();
 
         Physics2D.IgnoreLayerCollision(gameObject.layer, LayerMask.NameToLayer(layerToIgnore), true);
-        Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer(layerToIgnore), LayerMask.NameToLayer(layerToIgnore), true);
+        //Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer(layerToIgnore), LayerMask.NameToLayer(layerToIgnore), true);
 
         SetActionLists();
         SetStage();
