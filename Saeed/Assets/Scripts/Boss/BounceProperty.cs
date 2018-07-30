@@ -31,11 +31,11 @@ public class BounceProperty: MonoBehaviour {
         trembleRoutine = StartCoroutine(TrembleAnimation(0.5f));
     }
 
-    public void BigTremble()
+    public void BigTremble(int damage)
     {
         if (trembleRoutine != null) StopCoroutine(trembleRoutine);
         trembleRoutine = StartCoroutine(TrembleAnimation(1.0f));
-        if (bossHealth) bossHealth.SetDamage(1);
+        if (bossHealth) bossHealth.SetDamage(damage);
     }
 
     IEnumerator TrembleAnimation(float manualRatio)

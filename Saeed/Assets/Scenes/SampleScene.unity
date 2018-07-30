@@ -447,7 +447,7 @@ Prefab:
     - target: {fileID: 114734234773233836, guid: 4ff2ede7b17621c4bb432d37ac44a9da,
         type: 2}
       propertyPath: currentStage
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 4ff2ede7b17621c4bb432d37ac44a9da, type: 2}
@@ -6718,7 +6718,7 @@ SurfaceEffector2D:
   m_SpeedVariation: 0
   m_ForceScale: 0
   m_UseContactForce: 0
-  m_UseFriction: 1
+  m_UseFriction: 0
   m_UseBounce: 1
 --- !u!1 &2055898595
 GameObject:

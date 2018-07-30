@@ -235,16 +235,18 @@ MonoBehaviour:
   - {r: 0.9716981, g: 0.44459772, b: 0.44459772, a: 1}
   - {r: 0.016019935, g: 0.45568624, b: 0.6792453, a: 1}
   - {r: 0.8897689, g: 1, b: 0.3443396, a: 1}
+  - {r: 0.8962264, g: 0.1986917, b: 0.3451341, a: 1}
+  - {r: 0.6698113, g: 0.6698113, b: 0.6698113, a: 1}
+  directionArrow: {fileID: 1228635314308710}
   speedIncreaseRatio: 1
   speedDecreaseRatio: 0.6
   maxSpeed: 10
-  jumpForce: 700
-  jumpMaxHold: 12
+  jumpForce: 800
+  jumpMaxHold: 15
   groundLayer:
     serializedVersion: 2
     m_Bits: 256
   audioManager: {fileID: 114198684022212252}
-  directionArrow: {fileID: 1228635314308710}
   bouncePS: {fileID: 198049598405456956}
 --- !u!114 &114899882536455282
 MonoBehaviour:
@@ -257,7 +259,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a12a1e0df3d40446b5639b139f8bf78, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 3
+  maxHealth: 10
   UIDisplay: {fileID: 0}
 --- !u!198 &198049598405456956
 ParticleSystem:

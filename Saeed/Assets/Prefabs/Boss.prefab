@@ -360,7 +360,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0fcdd71411b03984884266184cffcc52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stageValues: 05000000280000001e00000028000000
+  stageValues: 050000001e0000001e0000001e000000
   gradient:
     serializedVersion: 2
     key0: {r: 0.9339623, g: 0.030838395, b: 0.030838395, a: 1}
@@ -406,7 +406,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1e97e84cd3f5f149a0403b4456e76bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentStage: 0
+  currentStage: 1
   particleSystemGroundShake: {fileID: 0}
   particleSystemSoundWave: {fileID: 198080022095765984}
   stageTitle: {fileID: 0}

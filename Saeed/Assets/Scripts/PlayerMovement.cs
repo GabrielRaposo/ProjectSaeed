@@ -5,11 +5,12 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour {
     const float MIN_X_SPEED = .25f, Y_SIZE = 1f;
 
-    public enum State { Stand, Airborne, Stunned }
+    public enum State { Stand, Airborne, Stomp, Cooldown, Stunned }
 
     [Header("Debug")]
     public State state;
     public Color[] stateColors;
+    public GameObject directionArrow;
 
     [Header("Movement Values")]
     public float speedIncreaseRatio;
@@ -23,15 +24,17 @@ public class PlayerMovement : MonoBehaviour {
 
     [Header("Component Reference")]
     public AudioManager audioManager;
-    public GameObject directionArrow;
     public ParticleSystem bouncePS;
+
+    int jumpHold;
 
     bool
         onGround,
         onWall,
         invincible,
         lookingRight,
-        bounceDisabled;
+        bounceDisabled,
+        stompDisabled;
 
     string 
         horizontalAxis, 
@@ -42,7 +45,7 @@ public class PlayerMovement : MonoBehaviour {
     SpriteRenderer _renderer;
     PlayerHealth _health;
     ScoreSystem scoreSystem;
-    Coroutine jumpRoutine;
+    Coroutine stompRoutine, stompDisableRoutine;
 
 	void Start () {
         _rigidbody = GetComponent<Rigidbody2D>();
@@ -52,8 +55,7 @@ public class PlayerMovement : MonoBehaviour {
 
         InitStrings();
 
-        SetLookingRight(true);
-
+        IsLookingRight(true);
         _renderer.color = stateColors[0];
     }
 	
@@ -71,19 +73,47 @@ public class PlayerMovement : MonoBehaviour {
             case State.Stand:
                 CheckGround();
                 HorizontalMovement();
-                JumpMovement();
+                GetJumpInput();
                 break;
 
             case State.Airborne:
                 CheckGround();
                 HorizontalMovement();
+                if (!stompDisabled) GetStompInput();
                 if (onWall) GetWallJump();
                 break;
 
+            case State.Stomp:
+                CheckGround();
+                if (onGround)
+                {
+                    StartCoroutine(StompEnd());
+                    state = State.Cooldown;
+                }
+                break;
+
+            case State.Cooldown:
             case State.Stunned:
                 break;
         }
 	}
+
+    private void FixedUpdate()
+    {
+        if (Time.timeScale < 1) return;
+        switch (state)
+        {
+            case State.Airborne:
+                if (jumpHold > 0)
+                {
+                    HoldJump(Vector2.up);
+                }
+                break;
+
+            default:
+                break;
+        }
+    }
 
     void CheckGround()
     {
@@ -124,7 +154,7 @@ public class PlayerMovement : MonoBehaviour {
                 _velocity.x = -maxSpeed;
 
             if(onGround || !onWall)
-                SetLookingRight( horizontalInput > 0 ? true : false );
+                IsLookingRight( horizontalInput > 0 ? true : false );
         }
         else
         { 
@@ -141,7 +171,7 @@ public class PlayerMovement : MonoBehaviour {
         _rigidbody.velocity = _velocity;
     }
 
-    void SetLookingRight(bool value)
+    void IsLookingRight(bool value)
     {
         if (value)
             directionArrow.transform.rotation = Quaternion.Euler(Vector3.forward * 270);
@@ -151,31 +181,88 @@ public class PlayerMovement : MonoBehaviour {
         lookingRight = value;
     }
 
-    void JumpMovement()
+    void GetJumpInput()
     {
         if (Input.GetButtonDown(jumpButton))
         {
             audioManager.Play("Jump");
+            jumpHold = (int)jumpMaxHold;
             Jump(Vector2.up);
-            if (jumpRoutine != null) StopCoroutine(jumpRoutine);
-            jumpRoutine = StartCoroutine(JumpHoldProperty());
         }
     }
 
     void Jump(Vector2 direction)
     {
+        _rigidbody.bodyType = RigidbodyType2D.Dynamic;
         _rigidbody.velocity = new Vector2(_rigidbody.velocity.x, 0);
-        _rigidbody.AddForce(direction * jumpForce);
+        _rigidbody.AddForce(direction * jumpForce, ForceMode2D.Force);
+        SetAirborneState();
     }
 
-    IEnumerator JumpHoldProperty() {
-        for (int i = 0; i < jumpMaxHold && Input.GetButton(jumpButton); i++)
+    void SetAirborneState()
+    {
+        stompDisabled = true;
+        if (stompDisableRoutine != null) StopCoroutine(stompDisableRoutine);
+        stompDisableRoutine = StartCoroutine(TimerToAllowStomp());
+        state = State.Airborne;
+    }
+
+    IEnumerator TimerToAllowStomp()
+    {
+        for(int i = 0; i < 10; i++)
+        {
+            yield return new WaitForEndOfFrame();
+        }
+        stompDisabled = false;
+    }
+
+    void HoldJump(Vector2 direction)
+    {
+        jumpHold--;
+        if (Input.GetButton(jumpButton))
         {
             _renderer.color = stateColors[3];
-            yield return new WaitForEndOfFrame();
-            Jump(Vector2.up);
+            _rigidbody.velocity = new Vector2(_rigidbody.velocity.x, 0);
+            _rigidbody.AddForce(direction * jumpForce, ForceMode2D.Force);
+        } else
+        {
+            jumpHold = 0;
         }
+        if(jumpHold < 1) _renderer.color = stateColors[0];
+    }
+
+    void GetStompInput()
+    {
+        if (Input.GetAxisRaw("Vertical") < 0)
+        {
+            if (stompRoutine != null) StopCoroutine(stompRoutine);
+            stompRoutine = StartCoroutine(StompStart());
+        }
+    }
+
+    IEnumerator StompStart()
+    {
+        state = State.Cooldown;
+
+        _renderer.color = stateColors[4];
+        _rigidbody.velocity = Vector2.zero;
+        _rigidbody.bodyType = RigidbodyType2D.Kinematic;
+
+        yield return new WaitForSeconds(1f);
+        _rigidbody.velocity = Vector2.down * 15;
+        _rigidbody.bodyType = RigidbodyType2D.Dynamic;
+
+        state = State.Stomp;
+    }
+
+    IEnumerator StompEnd()
+    {
+        _renderer.color = stateColors[5];
+        _rigidbody.bodyType = RigidbodyType2D.Dynamic;
+
+        yield return new WaitForSeconds(.5f);
         _renderer.color = stateColors[0];
+        state = State.Stand;
     }
 
     private void OnTriggerStay2D(Collider2D collision)
@@ -189,9 +276,9 @@ public class PlayerMovement : MonoBehaviour {
             {
                 bool isAbove = (transform.position.y - Y_SIZE / 2 > collision.transform.position.y) ? true : false;
                 if (isAbove) {
+                    bounceProperty.BigTremble((state == State.Stomp) ? 3 : 1);
                     BounceAway(collision.transform.position);
                     bouncePS.Play();
-                    bounceProperty.BigTremble();
                     if (scoreSystem) scoreSystem.AddValue();
                 } else {
                     BounceSideways(collision.transform.position);
@@ -218,9 +305,8 @@ public class PlayerMovement : MonoBehaviour {
         direction.y = 1;
         Jump(direction);
 
-        //Jump(Vector2.up);
-        if (jumpRoutine != null) StopCoroutine(jumpRoutine);
-        jumpRoutine = StartCoroutine(JumpHoldProperty());
+        if (stompRoutine != null) StopCoroutine(stompRoutine);
+        jumpHold = (int)jumpMaxHold;
     }
 
     public Vector2 Vector2FromAngle(float a)
@@ -230,14 +316,17 @@ public class PlayerMovement : MonoBehaviour {
     }
 
     void BounceSideways(Vector3 collisionPosition) {
-        Vector2 _force;
 
+        _rigidbody.bodyType = RigidbodyType2D.Dynamic;
+        Vector2 _force;
         if (transform.position.x < collisionPosition.x) 
             _force = Vector2.left;
         else 
             _force = Vector2.right;
-
         _rigidbody.velocity = _force * 15;
+
+        if (stompRoutine != null) StopCoroutine(stompRoutine);
+        SetAirborneState();
     }
 
     IEnumerator bounceDisableFrames()
@@ -261,7 +350,7 @@ public class PlayerMovement : MonoBehaviour {
             _renderer.color = stateColors[2];
             onWall = true;
             if (!onGround) {
-                SetLookingRight((collision.contacts[0].point.x > transform.position.x) ? false : true);
+                IsLookingRight((collision.contacts[0].point.x > transform.position.x) ? false : true);
             }
         }
     }
@@ -272,7 +361,7 @@ public class PlayerMovement : MonoBehaviour {
         {
             _renderer.color = stateColors[2];
             if (!onGround) {
-                SetLookingRight((collision.contacts[0].point.x > transform.position.x) ? false : true);
+                IsLookingRight((collision.contacts[0].point.x > transform.position.x) ? false : true);
             }
         }
     }
@@ -314,16 +403,18 @@ public class PlayerMovement : MonoBehaviour {
 
     void Knockback()
     {
-        Vector2 pushDirection = Vector2.up * 8 + (lookingRight ? Vector2.left : Vector2.right) * 8;
+        _rigidbody.bodyType = RigidbodyType2D.Dynamic;
+        Vector2 pushDirection = Vector2.up * 8 + (lookingRight ? Vector2.left : Vector2.right) * 5;
         _rigidbody.velocity = pushDirection;
-        StartCoroutine(stun());
+        jumpHold = 0;
+        StartCoroutine(Stun());
     }
 
-    IEnumerator stun()
+    IEnumerator Stun()
     {
         state = State.Stunned;
         _renderer.color = stateColors[1];
-        yield return new WaitForSeconds(.5f);
+        yield return new WaitForSeconds(.3f);
         _renderer.color = stateColors[0];
         state = State.Stand;
     }
