@@ -13,7 +13,6 @@ public class BounceProperty: MonoBehaviour {
     public BossHealth bossHealth;
 
     SpriteRenderer _renderer;
-    Collider2D _collider;
 
     Coroutine trembleRoutine;
     Vector2 originalScale;
@@ -21,7 +20,6 @@ public class BounceProperty: MonoBehaviour {
     private void Start()
     {
         _renderer = GetComponent<SpriteRenderer>();
-        _collider = GetComponent<Collider2D>();
         originalScale = transform.localScale;
     }
 
@@ -53,7 +51,6 @@ public class BounceProperty: MonoBehaviour {
             transform.localScale = originalScale;
             tForce -= trembleDecrease;
         }
-        _collider.enabled = true;
         yield return new WaitForEndOfFrame();
     }
 

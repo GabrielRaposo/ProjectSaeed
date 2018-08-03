@@ -6,7 +6,10 @@ using System.Collections.Generic;
 public class BossController : MonoBehaviour {
 
     public enum Stage { Tutorial, Face, Arms, Legs, Outro }
+
+    [Header("Component References")]
     public Stage currentStage;
+    public Collider2D[] colliders;
 
     enum ActionState { Stand, HideAndShow, ConjureBombs, ChargeAndJump, SummonMinions }
     List<ActionState> actionList, actionQueue; 
@@ -16,7 +19,6 @@ public class BossController : MonoBehaviour {
     public ParticleSystem particleSystemSoundWave;
 
     [Header("UI References")]
-    public TextMeshProUGUI stageTitle;
     public string layerToIgnore;
 
     Animator animator;
@@ -29,7 +31,7 @@ public class BossController : MonoBehaviour {
         animator = GetComponent<Animator>();
 
         Physics2D.IgnoreLayerCollision(gameObject.layer, LayerMask.NameToLayer(layerToIgnore), true);
-        //Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer(layerToIgnore), LayerMask.NameToLayer(layerToIgnore), true);
+        Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer(layerToIgnore), LayerMask.NameToLayer(layerToIgnore), true);
 
         SetActionLists();
         SetStage();
@@ -47,41 +49,29 @@ public class BossController : MonoBehaviour {
         {
             default:
             case Stage.Tutorial:
-                StartCoroutine(SetTitle("Stage 0: Tutorial"));
                 transform.position = new Vector2(transform.position.x, -7.5f);
                 animator.enabled = false;
                 break;
 
             case Stage.Face:
-                StartCoroutine(SetTitle("Stage 1: Face Reveal"));
                 transform.position = new Vector2(transform.position.x, -6);
                 animator.enabled = true;
                 CallNewAction();
                 break;
 
             case Stage.Arms:
-                StartCoroutine(SetTitle("Stage 2: Armed and Ready"));
                 transform.position = new Vector2(transform.position.x, -5);
                 break;
 
             case Stage.Legs:
-                StartCoroutine(SetTitle("Stage 3: Leg day!"));
+                transform.position = new Vector2(transform.position.x, -5);
                 break;
 
             case Stage.Outro:
-                StartCoroutine(SetTitle("You win."));
                 Destroy(gameObject);
                 break;
         }
         GetComponent<BossHealth>().SetStageIndex((int)currentStage);
-    }
-
-    IEnumerator SetTitle(string text)
-    {
-        stageTitle.text = text;
-        stageTitle.enabled = true;
-        yield return new WaitForSeconds(3);
-        stageTitle.enabled = false;
     }
 
     void SetActionLists()
@@ -92,6 +82,7 @@ public class BossController : MonoBehaviour {
         actionList.Add(ActionState.SummonMinions);
 
         actionQueue = new List<ActionState>();
+        actionQueue.Add(ActionState.SummonMinions);
         actionQueue.Add(ActionState.ChargeAndJump);
         actionQueue.Add(ActionState.HideAndShow);
         actionQueue.Add(ActionState.ConjureBombs);
@@ -107,10 +98,10 @@ public class BossController : MonoBehaviour {
     {
         stateMachine.ChangeState(new State_Stand(this, animator));
 
-        yield return new WaitForSeconds(Random.Range(2f, 3f));
+        yield return new WaitForSeconds(Random.Range(1f, 2f));
 
         PickAction();
-        //stateMachine.ChangeState(new State_HideAndShow(this, 2, transform, animator, particleSystemGroundShake));
+        //stateMachine.ChangeState(new State_SummonMinions(this, Random.Range(4,6), animator, Spawner.instance, particleSystemSoundWave));
     }
 
     private void PickAction()
@@ -130,7 +121,7 @@ public class BossController : MonoBehaviour {
                 stateMachine.ChangeState(new State_ChargeAndJump(this, animator));
                 break;
             case ActionState.SummonMinions:
-                stateMachine.ChangeState(new State_SummonMinions(this, 0, animator, Spawner.instance, particleSystemSoundWave));
+                stateMachine.ChangeState(new State_SummonMinions(this, Random.Range(0, 6), animator, Spawner.instance, particleSystemSoundWave));
                 break;
         }
 
@@ -140,4 +131,10 @@ public class BossController : MonoBehaviour {
         actionQueue.RemoveAt(0);
     }
 
+    public void SetDeathState()
+    {
+        StopAllCoroutines();
+        foreach (Collider2D c in colliders) c.enabled = false;
+        stateMachine.ChangeState(new State_Death(this, animator));
+    }
 }

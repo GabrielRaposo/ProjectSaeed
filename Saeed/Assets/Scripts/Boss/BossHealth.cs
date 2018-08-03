@@ -55,11 +55,12 @@ public class BossHealth : MonoBehaviour {
         UpdateBar();
         if (value < 1)
         {
-            if(stageIndex < stageValues.Length - 1)
+            invincible = true;
+            if (stageIndex < stageValues.Length - 1)
             {
                 stageIndex++;
             }
-            StartCoroutine(Refill());
+            GameManager.instance.CallStageTransition(stageIndex, this);
         }
     }
 
@@ -70,7 +71,7 @@ public class BossHealth : MonoBehaviour {
         foreach (SpriteRenderer r in _renderers) r.material.shader = originalShader;
     }
 
-    IEnumerator Refill() {
+    public IEnumerator Refill() {
         invincible = true;
         yield return ShakeBar();
         yield return new WaitForSeconds(0.5f);

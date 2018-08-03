@@ -20,6 +20,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4321502120811264}
   - component: {fileID: 212131045691459522}
+  - component: {fileID: 82199161526358988}
   m_Layer: 9
   m_Name: Face
   m_TagString: Untagged
@@ -37,7 +38,6 @@ GameObject:
   - component: {fileID: 4919576085424078}
   - component: {fileID: 212953984249749364}
   - component: {fileID: 114861681612424442}
-  - component: {fileID: 70089990249008278}
   - component: {fileID: 60715868938997144}
   m_Layer: 9
   m_Name: Cap
@@ -301,21 +301,6 @@ PolygonCollider2D:
       - {x: 0.005, y: -1.54}
       - {x: 0.185, y: -1.55}
       - {x: 0.235, y: -1.55}
---- !u!70 &70089990249008278
-CapsuleCollider2D:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1394023035400254}
-  m_Enabled: 0
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0.11}
-  m_Size: {x: 9.97, y: 3.07}
-  m_Direction: 1
 --- !u!70 &70171645834937818
 CapsuleCollider2D:
   m_ObjectHideFlags: 1
@@ -331,6 +316,101 @@ CapsuleCollider2D:
   m_Offset: {x: 0, y: 0}
   m_Size: {x: 5, y: 10}
   m_Direction: 0
+--- !u!82 &82199161526358988
+AudioSource:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1366967007662246}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: 665bc638a50f55e4ba53581224ca33e9, type: 3}
+  m_PlayOnAwake: 0
+  m_Volume: 0.5
+  m_Pitch: 3
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!95 &95173943912470182
 Animator:
   serializedVersion: 3
@@ -360,7 +440,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0fcdd71411b03984884266184cffcc52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stageValues: 050000001e0000001e0000001e000000
+  stageValues: 01000000010000000100000003000000
   gradient:
     serializedVersion: 2
     key0: {r: 0.9339623, g: 0.030838395, b: 0.030838395, a: 1}
@@ -406,10 +486,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1e97e84cd3f5f149a0403b4456e76bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentStage: 1
+  currentStage: 0
+  colliders:
+  - {fileID: 70171645834937818}
+  - {fileID: 60715868938997144}
   particleSystemGroundShake: {fileID: 0}
   particleSystemSoundWave: {fileID: 198080022095765984}
-  stageTitle: {fileID: 0}
   layerToIgnore: Enemy
 --- !u!114 &114861681612424442
 MonoBehaviour:

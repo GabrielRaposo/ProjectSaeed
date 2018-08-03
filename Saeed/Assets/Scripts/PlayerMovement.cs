@@ -34,7 +34,8 @@ public class PlayerMovement : MonoBehaviour {
         invincible,
         lookingRight,
         bounceDisabled,
-        stompDisabled;
+        stompDisabled, 
+        onCutscene;
 
     string 
         horizontalAxis, 
@@ -67,7 +68,7 @@ public class PlayerMovement : MonoBehaviour {
     }
 
 	void Update () {
-        if (Time.timeScale < 1) return;
+        if (Time.timeScale < .5f || onCutscene) return;
         switch (state)
         {
             case State.Stand:
@@ -100,7 +101,7 @@ public class PlayerMovement : MonoBehaviour {
 
     private void FixedUpdate()
     {
-        if (Time.timeScale < 1) return;
+        if (Time.timeScale < 1 || onCutscene) return;
         switch (state)
         {
             case State.Airborne:
@@ -129,9 +130,9 @@ public class PlayerMovement : MonoBehaviour {
                 break;
 
             case State.Airborne:
-                if (onGround && scoreSystem)
+                if (onGround)
                 {
-                    scoreSystem.ResetValue();
+                    if(scoreSystem) scoreSystem.ResetValue();
                     audioManager.Play("Land");
                     state = State.Stand;
                 }
@@ -245,10 +246,10 @@ public class PlayerMovement : MonoBehaviour {
         state = State.Cooldown;
 
         _renderer.color = stateColors[4];
-        _rigidbody.velocity = Vector2.zero;
+        _rigidbody.velocity = Vector2.up * 2;
         _rigidbody.bodyType = RigidbodyType2D.Kinematic;
 
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(.8f);
         _rigidbody.velocity = Vector2.down * 15;
         _rigidbody.bodyType = RigidbodyType2D.Dynamic;
 
@@ -291,7 +292,7 @@ public class PlayerMovement : MonoBehaviour {
         } else 
         if(collision.tag == "Hitbox")
         {
-            GetDamaged();
+            GetDamaged(collision.transform.position);
         }
     }
 
@@ -343,7 +344,7 @@ public class PlayerMovement : MonoBehaviour {
         {
             Bomb bomb = collision.gameObject.GetComponent<Bomb>();
             if (bomb) bomb.Explode();
-            GetDamaged();
+            GetDamaged(collision.contacts[0].point);
         } else
         if (collision.transform.tag == "Wall")
         {
@@ -385,26 +386,22 @@ public class PlayerMovement : MonoBehaviour {
         }
     }
 
-    void GetDamaged()
+    void GetDamaged(Vector3 bounceAwayFrom)
     {
         if (invincible) return;
         _health.SetDamage(1);
         audioManager.Play("Hurt");
-        DisableMovement();
-    }
 
-    void DisableMovement()
-    {
         StopAllCoroutines();
         bounceDisabled = false;
-        Knockback();
+        Knockback(bounceAwayFrom);
         StartCoroutine(blinkLoop());
     }
 
-    void Knockback()
+    void Knockback(Vector3 bounceAwayFrom)
     {
         _rigidbody.bodyType = RigidbodyType2D.Dynamic;
-        Vector2 pushDirection = Vector2.up * 8 + (lookingRight ? Vector2.left : Vector2.right) * 5;
+        Vector2 pushDirection = Vector2.up * 8 + ((transform.position.x < bounceAwayFrom.x) ? Vector2.left : Vector2.right) * 5;
         _rigidbody.velocity = pushDirection;
         jumpHold = 0;
         StartCoroutine(Stun());
@@ -440,5 +437,39 @@ public class PlayerMovement : MonoBehaviour {
         }
 
         invincible = false;
+    }
+
+    public IEnumerator GoToThePositonAndLookCenter(float aimedX)
+    {
+        onCutscene = true;
+        invincible = true;
+
+        bool goLeft;
+        float xVelocity;
+
+        if(transform.position.x < 0) {
+            goLeft = true;
+            xVelocity = -maxSpeed;
+            aimedX = -aimedX;
+        } else {
+            goLeft = false;
+            xVelocity = maxSpeed;
+        }
+
+        IsLookingRight(!goLeft);
+        while (Mathf.Abs(transform.position.x) < Mathf.Abs(aimedX))
+        {
+            yield return new WaitForFixedUpdate();
+            _rigidbody.velocity = new Vector2(xVelocity, _rigidbody.velocity.y);
+        }
+
+        IsLookingRight(goLeft);
+    }
+
+    public void EndCutscene()
+    {
+        invincible = false;
+        onCutscene = false;
+        state = State.Stand;
     }
 }
