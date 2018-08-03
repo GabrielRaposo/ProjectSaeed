@@ -440,7 +440,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0fcdd71411b03984884266184cffcc52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stageValues: 01000000010000000100000003000000
+  stageValues: 03000000140000001400000014000000
   gradient:
     serializedVersion: 2
     key0: {r: 0.9339623, g: 0.030838395, b: 0.030838395, a: 1}

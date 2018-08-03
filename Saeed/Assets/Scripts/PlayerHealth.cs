@@ -1,28 +1,30 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
 
 public class PlayerHealth : MonoBehaviour {
     [Header("Values")]
     public int maxHealth;
 
     [Header("External Info")]
-    public TextMeshProUGUI UIDisplay;
+    public PlayerHealthDisplay UIDisplay;
 
     public int value { get; private set; }
+    [HideInInspector] static public int deathCount;
 
     private void Start()
     {
         value = maxHealth;
-        UpdateDisplay();
+        //UpdateDisplay();
     }
 
     private void UpdateDisplay()
     {
         if (UIDisplay)
-            UIDisplay.text = "Health: " + value.ToString("0");
-    }
+        {
+            UIDisplay.ChangeFill((float) value / maxHealth);
+        }
+    } 
 
     public void SetDamage(int damage)
     {

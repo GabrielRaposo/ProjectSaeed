@@ -8,7 +8,7 @@ public class BossController : MonoBehaviour {
     public enum Stage { Tutorial, Face, Arms, Legs, Outro }
 
     [Header("Component References")]
-    public Stage currentStage;
+    static public Stage currentStage;
     public Collider2D[] colliders;
 
     enum ActionState { Stand, HideAndShow, ConjureBombs, ChargeAndJump, SummonMinions }
@@ -33,6 +33,8 @@ public class BossController : MonoBehaviour {
         Physics2D.IgnoreLayerCollision(gameObject.layer, LayerMask.NameToLayer(layerToIgnore), true);
         Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer(layerToIgnore), LayerMask.NameToLayer(layerToIgnore), true);
 
+        //currentStage = Stage.Face;
+
         SetActionLists();
         SetStage();
     }
@@ -41,6 +43,11 @@ public class BossController : MonoBehaviour {
     {
         currentStage++;
         SetStage();
+    }
+
+    public int GetStageIndex()
+    {
+        return (int)currentStage;
     }
 
     void SetStage()
@@ -61,10 +68,12 @@ public class BossController : MonoBehaviour {
 
             case Stage.Arms:
                 transform.position = new Vector2(transform.position.x, -5);
+                CallNewAction();
                 break;
 
             case Stage.Legs:
                 transform.position = new Vector2(transform.position.x, -5);
+                CallNewAction();
                 break;
 
             case Stage.Outro:

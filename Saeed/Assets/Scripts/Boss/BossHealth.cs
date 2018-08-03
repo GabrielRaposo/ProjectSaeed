@@ -60,7 +60,7 @@ public class BossHealth : MonoBehaviour {
             {
                 stageIndex++;
             }
-            GameManager.instance.CallStageTransition(stageIndex, this);
+            GameManager.instance.CallStageTransition(stageIndex);
         }
     }
 

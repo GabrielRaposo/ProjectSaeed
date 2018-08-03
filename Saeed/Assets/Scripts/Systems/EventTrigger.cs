@@ -6,14 +6,15 @@ using UnityEngine.SceneManagement;
 public class EventTrigger : MonoBehaviour {
 
     //temp
+    public TitleManager titleManager;
     public int sceneIndex;
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.transform.tag == "Player")
         {
-            GameManager gameManager = GameManager.instance;
-            if (gameManager) gameManager.CallScene(sceneIndex);
+            if (titleManager) titleManager.StartBattle();
+            BossController.currentStage = BossController.Stage.Tutorial;
         }
     }
 }
